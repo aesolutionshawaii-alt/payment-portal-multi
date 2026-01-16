@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getUserByEmail } from '@/lib/db'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,6 +21,8 @@ export async function GET(request: NextRequest) {
       // No Stripe customer yet, return empty history
       return NextResponse.json({ payments: [] })
     }
+
+    const stripe = getStripe()
 
     // Fetch charges from Stripe for this customer
     const charges = await stripe.charges.list({

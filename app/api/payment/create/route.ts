@@ -3,19 +3,22 @@ import Stripe from 'stripe'
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid'
 import { getUserByEmail, updateUserStripeCustomer } from '@/lib/db'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
-const plaidConfig = new Configuration({
-  basePath: PlaidEnvironments[process.env.NEXT_PUBLIC_PLAID_ENV as 'sandbox' | 'production'],
-  baseOptions: {
-    headers: {
-      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID!,
-      'PLAID-SECRET': process.env.PLAID_SECRET!,
+function getPlaidClient() {
+  const config = new Configuration({
+    basePath: PlaidEnvironments[process.env.NEXT_PUBLIC_PLAID_ENV as 'sandbox' | 'production'],
+    baseOptions: {
+      headers: {
+        'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID!,
+        'PLAID-SECRET': process.env.PLAID_SECRET!,
+      },
     },
-  },
-})
-
-const plaidClient = new PlaidApi(plaidConfig)
+  })
+  return new PlaidApi(config)
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,6 +39,9 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Starting Stripe ACH payment for:', email, 'amount:', amount)
+
+    const stripe = getStripe()
+    const plaidClient = getPlaidClient()
 
     // Step 1: Get bank account details from Plaid
     const authResponse = await plaidClient.authGet({

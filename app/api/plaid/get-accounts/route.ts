@@ -3,17 +3,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid'
 import { getUserByEmail } from '@/lib/db'
 
-const configuration = new Configuration({
-  basePath: PlaidEnvironments[process.env.NEXT_PUBLIC_PLAID_ENV as 'sandbox' | 'production'],
-  baseOptions: {
-    headers: {
-      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
-      'PLAID-SECRET': process.env.PLAID_SECRET,
+function getPlaidClient() {
+  const configuration = new Configuration({
+    basePath: PlaidEnvironments[process.env.NEXT_PUBLIC_PLAID_ENV as 'sandbox' | 'production'],
+    baseOptions: {
+      headers: {
+        'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+        'PLAID-SECRET': process.env.PLAID_SECRET,
+      },
     },
-  },
-})
-
-const plaidClient = new PlaidApi(configuration)
+  })
+  return new PlaidApi(configuration)
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,6 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No bank linked' }, { status: 404 })
     }
 
+    const plaidClient = getPlaidClient()
     const response = await plaidClient.accountsGet({
       access_token: user.plaid_access_token,
     })
