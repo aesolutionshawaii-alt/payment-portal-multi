@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import PaymentForm from '@/components/PaymentForm'
 import PaymentHistory from '@/components/PaymentHistory'
 import PlaidLink from '@/components/PlaidLink'
@@ -173,17 +172,14 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 md:py-16">
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <Image
-              src="/ahitrooper_white1.png"
-              alt="Logo"
-              width={200}
-              height={80}
-              priority
-            />
+            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </div>
           </div>
-          <p className="text-gray-500 text-xs mt-2">Powered by High Seas Hawaii Media Group Inc</p>
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"></div>
-          <p className="text-gray-400 text-sm uppercase tracking-widest">Payment Portal</p>
+          <h1 className="text-2xl font-light text-white mb-2">Payment Portal</h1>
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
         </div>
 
         {/* Main Card */}
